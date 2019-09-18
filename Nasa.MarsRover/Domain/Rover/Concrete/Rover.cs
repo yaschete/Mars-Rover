@@ -17,13 +17,13 @@ namespace Nasa.MarsRover.Domain.Rover.Concrete
         //
         public Point Position { get; set; }
         public Direction Direction { get; set; }
-
+        private IPlateau _plateau;
 
         public Rover()
         {
             _movementMethodDictionary = new Dictionary<Movement, Action>
             {
-                {Movement.Forward,()=> Position =_wing.Move(Position) },
+                {Movement.Forward,()=> Position =_wing.Move(Position,_plateau) },
                 {Movement.Left,()=> _wing = _wing.TurnLeft() },
                 {Movement.Right,()=> _wing = _wing.TurnRight() }
             };
@@ -37,8 +37,9 @@ namespace Nasa.MarsRover.Domain.Rover.Concrete
                 };
 
         }
-        public void DriveRover(IEnumerable<Movement> movements)
+        public void DriveRover(IPlateau plateau, IEnumerable<Movement> movements)
         {
+            _plateau = plateau;
             foreach (var movement in movements)
             {
                 _movementMethodDictionary[movement].Invoke();

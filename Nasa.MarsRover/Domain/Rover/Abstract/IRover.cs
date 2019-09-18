@@ -9,7 +9,7 @@ namespace Nasa.MarsRover.Domain.Rover.Abstract
         Point Position { get; set; }
         Direction Direction { get; set; }
 
-        void DriveRover(IEnumerable<Movement> movements);
+        void DriveRover(IPlateau plateau, IEnumerable<Movement> movements);
         void CreateRover(IPlateau plateau, Point point, Direction direction);
         bool CheckCreateStatus();
     }

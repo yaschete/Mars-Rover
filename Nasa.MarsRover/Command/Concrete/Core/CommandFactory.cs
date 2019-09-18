@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Nasa.MarsRover.Command.Abstract.Core;
-using Nasa.MarsRover.Command.Abstract.Rover;
-using Nasa.MarsRover.Command.Concrete.Rover;
 using Nasa.MarsRover.Command.Helpers;
 using Nasa.MarsRover.Domain.Plateau.Abstract;
 using Nasa.MarsRover.Domain.Rover.Abstract;

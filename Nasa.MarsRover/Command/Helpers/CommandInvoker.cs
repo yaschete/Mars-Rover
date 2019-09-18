@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nasa.MarsRover.Command.Abstract.Core;
 using Nasa.MarsRover.Command.Abstract.Plateau;
 using Nasa.MarsRover.Command.Abstract.Rover;
 using Nasa.MarsRover.Command.Enums;
 using Nasa.MarsRover.Domain.Plateau.Abstract;
 using Nasa.MarsRover.Domain.Rover.Abstract;
+using Nasa.MarsRover.Exception.Rover;
 
 namespace Nasa.MarsRover.Command.Helpers
 {
@@ -30,7 +32,7 @@ namespace Nasa.MarsRover.Command.Helpers
             };
         }
 
-        
+
         public void SetRovers(IList<IRover> rovers)
         {
             _rovers = rovers;
@@ -78,7 +80,7 @@ namespace Nasa.MarsRover.Command.Helpers
         {
             var roverExploreCommand = (IRoverDriveCommand)command;
             var latestRover = _rovers[_rovers.Count - 1];
-            roverExploreCommand.SetReceiver(latestRover);
+            roverExploreCommand.SetReceiver(latestRover, _plateau);
         }
         #endregion
     }
