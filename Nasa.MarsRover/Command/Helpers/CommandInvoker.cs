@@ -7,7 +7,6 @@ using Nasa.MarsRover.Command.Abstract.Rover;
 using Nasa.MarsRover.Command.Enums;
 using Nasa.MarsRover.Domain.Plateau.Abstract;
 using Nasa.MarsRover.Domain.Rover.Abstract;
-using Nasa.MarsRover.Exception.Rover;
 
 namespace Nasa.MarsRover.Command.Helpers
 {
@@ -80,7 +79,9 @@ namespace Nasa.MarsRover.Command.Helpers
         {
             var roverExploreCommand = (IRoverDriveCommand)command;
             var latestRover = _rovers[_rovers.Count - 1];
-            roverExploreCommand.SetReceiver(latestRover, _plateau);
+            var otherRovers = _rovers.Except(new List<IRover> { latestRover }).Select(x => x.Position).ToList();
+
+            roverExploreCommand.SetReceiver(latestRover, _plateau, otherRovers);
         }
         #endregion
     }

@@ -47,6 +47,14 @@ namespace Nasa.MarsRover.Test
             Assert.Throws<RoverOutOfPlateuException>(() => commandFactory.Execute(input));
         }
 
+        [Test]
+        public void CrashRover()
+        {
+            var input = GetInputCommandStringForCrashRover();
+            var commandFactory = _container.Resolve<ICommandFactory>();
+            Assert.Throws<RoverCrashException>(() => commandFactory.Execute(input));
+        }
+
 
 
 
@@ -73,6 +81,18 @@ namespace Nasa.MarsRover.Test
             commandStringBuilder.Append("LMRMMMMMMMMMMMMMMM");
             return commandStringBuilder.ToString();
         }
+
+        private static string GetInputCommandStringForCrashRover()
+        {
+            var commandStringBuilder = new StringBuilder();
+            commandStringBuilder.AppendLine("5 5");
+            commandStringBuilder.AppendLine("1 2 N");
+            commandStringBuilder.AppendLine("LM");
+            commandStringBuilder.AppendLine("1 3 N");
+            commandStringBuilder.Append("LMLMMM");
+            return commandStringBuilder.ToString();
+        }
+
         private static string GetExpectedReportString()
         {
             var commandStringBuilder = new StringBuilder();
@@ -81,13 +101,6 @@ namespace Nasa.MarsRover.Test
             return commandStringBuilder.ToString();
         }
 
-        private static string GetExpectedReportStringForCrashScenario()
-        {
-            var commandStringBuilder = new StringBuilder();
-            commandStringBuilder.AppendLine("1 3 N");
-            commandStringBuilder.Append("5 1 E");
-            return commandStringBuilder.ToString();
-        }
         #endregion
     }
 }

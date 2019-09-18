@@ -4,6 +4,7 @@ using System.Linq;
 using Nasa.MarsRover.Domain.Plateau;
 using Nasa.MarsRover.Domain.Plateau.Abstract;
 using Nasa.MarsRover.Domain.Rover.Abstract;
+using Nasa.MarsRover.Exception.Rover;
 
 namespace Nasa.MarsRover.Domain.Rover.Concrete
 {
@@ -18,12 +19,13 @@ namespace Nasa.MarsRover.Domain.Rover.Concrete
         public Point Position { get; set; }
         public Direction Direction { get; set; }
         private IPlateau _plateau;
+        private IList<Point> _otherRoverPoints;
 
         public Rover()
         {
             _movementMethodDictionary = new Dictionary<Movement, Action>
             {
-                {Movement.Forward,()=> Position =_wing.Move(Position,_plateau) },
+                {Movement.Forward,()=> SetPosition(_wing.Move(Position)) },
                 {Movement.Left,()=> _wing = _wing.TurnLeft() },
                 {Movement.Right,()=> _wing = _wing.TurnRight() }
             };
@@ -37,9 +39,29 @@ namespace Nasa.MarsRover.Domain.Rover.Concrete
                 };
 
         }
-        public void DriveRover(IPlateau plateau, IEnumerable<Movement> movements)
+
+        public void SetPosition(Point newPoint)
+        {
+            var plateauSize = _plateau.GetAreaSize();
+
+            // check for out of plateau exception
+            if (newPoint.CoordinateX < 0 || plateauSize.Width < newPoint.CoordinateX || newPoint.CoordinateY < 0 || plateauSize.Height < newPoint.CoordinateY)
+            {
+                throw new RoverOutOfPlateuException($" out of plateau ==>X: {newPoint.CoordinateX} - Y: {newPoint.CoordinateY} ");
+            }
+
+            // check for rover crash exception
+            if (_otherRoverPoints.Any(x => x.CoordinateX == newPoint.CoordinateX && x.CoordinateY == newPoint.CoordinateY))
+            {
+                throw new RoverCrashException($"rover crash ==> X: {newPoint.CoordinateX} - Y: {newPoint.CoordinateY}");
+            }
+
+            Position = newPoint;
+        }
+        public void DriveRover(IPlateau plateau, IEnumerable<Movement> movements, IList<Point> otherRoverPoints)
         {
             _plateau = plateau;
+            _otherRoverPoints = otherRoverPoints;
             foreach (var movement in movements)
             {
                 _movementMethodDictionary[movement].Invoke();
